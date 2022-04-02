@@ -1,6 +1,6 @@
 [![Ruby Tests](https://github.com/CrunchwrapSupreme/rubyconfig-vault/actions/workflows/ruby-test.yml/badge.svg?branch=main)](https://github.com/CrunchwrapSupreme/rubyconfig-vault/actions/workflows/ruby-test.yml)
 [![Gem Version](https://badge.fury.io/rb/rubyconfig-vault.svg)](https://badge.fury.io/rb/rubyconfig-vault)
-# Rubyconfig::Vault
+# Rubyconfig Vault
 
 This gem is provided to support vault sources in rubyconfig installations.
 
@@ -22,7 +22,7 @@ Or install it yourself as:
 
 ## Usage
 
-For more authentication methods see ruby documentation for https://github.com/hashicorp/vault-ruby
+For more vault authentication methods see ruby documentation for https://github.com/hashicorp/vault-ruby and for additional rubyconfig configuration options see https://github.com/rubyconfig/config.
 
 ```ruby
 require 'rubyconfig/vault'
@@ -32,20 +32,34 @@ source = Config::Sources::VaultSource(address: ENV['VAULT_ADDR'],
                                       token: auth_secret.auth.client_token,
                                       paths: ['kvp/secret'])
                                       
-# The ** operator scans all child keys of kvp/ for sub-keys of 'test'
-source.add_path('kvp/**/test')
-
-# The * operator assigns all values at path and the values of immediate child keys
+# The * operator retrieves values at kvp/ and the values of immediate child keys
 source.add_path('kvp/*')
+
+# The ** operator scans all child keys of kvp/ for sub-keys containing 'test'
+source.add_path('kvp/**/test')
 
 # Or combine the two...
 source.add_path('kvp/**/some/keys/*')
 
 Settings.add_source!(source)
 Settings.reload!
+
+# 'kvp/*'
+puts Settings.kvp.some_value
+puts Settings.kvp.rando.some_value
+
+# 'kvp/**/test'
+puts Settings.kvp.rando.test.some_value
+puts Settings.kvp.rando2.test.some_value
+
+# 'kvp/**/some/keys/*'
+puts Settings.kvp.rando3.some.keys.some_value
+puts Settings.kvp.rando4.some.keys.test2.some_value
 ```
 
 ## Development
+
+Follow https://www.vaultproject.io/docs/install to install vault as development dependency. Alternatively use the provided Dockerfile.
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 
