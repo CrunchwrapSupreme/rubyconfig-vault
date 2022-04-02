@@ -1,5 +1,7 @@
 [![Ruby Tests](https://github.com/CrunchwrapSupreme/rubyconfig-vault/actions/workflows/ruby-test.yml/badge.svg?branch=main)](https://github.com/CrunchwrapSupreme/rubyconfig-vault/actions/workflows/ruby-test.yml)
 [![Gem Version](https://badge.fury.io/rb/rubyconfig-vault.svg)](https://badge.fury.io/rb/rubyconfig-vault)
+![Gem Downloads](https://img.shields.io/gem/dt/rubyconfig-vault)
+
 # Ruby Config Vault Source
 
 This gem is provided to support vault sources in [rubyconfig/config](https://github.com/rubyconfig/config) installations.
