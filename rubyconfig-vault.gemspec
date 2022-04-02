@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = 'Implements a ruby config source from vault'
   spec.homepage      = 'https://github.com/CrunchwrapSupreme/rubyconfig-vault'
-  spec.required_ruby_version = Gem::Requirement.new(">= 2.3.0")
+  spec.required_ruby_version = Gem::Requirement.new(">= 2.6.0")
 
   spec.metadata["allowed_push_host"] = 'https://rubygems.org'
 
@@ -19,8 +19,11 @@ Gem::Specification.new do |spec|
   # Specify which files should be added to the gem when it is released.
   # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
   spec.files         = Dir['lib/**/*.rb']
-  spec.add_runtime_dependency "vault", "~> 0.16.0"
   spec.bindir        = "exe"
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
+  spec.add_runtime_dependency "vault", "~> 0.16.0"
+  spec.add_runtime_dependency "config", "~> 4.0.0"
+  spec.add_development_dependency "rake", "~> 12.0"
+  spec.add_development_dependency "rspec", "~> 3.0"
 end
