@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'config'
 
 RSpec.describe Config::Sources::VaultSource do
-  let(:client) { vault_client.kv('verionsed-kv') }
+  let(:client) { vault_client.kv('versioned-kv') }
   let(:source) { vault_source }
 
   before(:context) do
