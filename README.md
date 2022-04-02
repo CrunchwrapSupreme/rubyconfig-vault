@@ -28,9 +28,9 @@ For more vault authentication methods see ruby documentation for https://github.
 require 'config/vault'
 
 auth_secret = Vault.auth.approle('roleid', 'secret id')
-source = Config::Sources::VaultSource(address: ENV['VAULT_ADDR'], 
-                                      token: auth_secret.auth.client_token,
-                                      paths: ['kvp/secret'])
+source = Config::Sources::VaultSource.new(address: ENV['VAULT_ADDR'], 
+                                          token: auth_secret.auth.client_token,
+                                          paths: ['kvp/secret'])
                                       
 # The * operator retrieves values at kvp/ and the values of immediate child keys
 source.add_path('kvp/*')
@@ -43,8 +43,12 @@ source.add_path('kvp/**/some/keys/*')
 
 Config.load_and_set_settings(source)
 
-Settings.add_source!(source)
-Settings.reload!
+# Alternatively to reload after loading yaml configuration...
+# Settings.add_source!(source)
+# Settings.reload!
+
+# 'kvp/secret'
+puts Settings.kvp.secret
 
 # 'kvp/*'
 puts Settings.kvp.some_value
@@ -58,6 +62,11 @@ puts Settings.kvp.rando2.test.some_value
 puts Settings.kvp.rando3.some.keys.some_value
 puts Settings.kvp.rando4.some.keys.test2.some_value
 ```
+
+Valid options for `Config::Sources::VaultSource.new` include all the configuration options provided by `Vault::Client.new` and the following:
+- `:root` set a root key under which all keys from this source will be located
+- `:kv` set the mount point
+- `:paths` a list of valid paths for keys
 
 ## Development
 
