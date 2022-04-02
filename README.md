@@ -1,14 +1,15 @@
 [![Ruby Tests](https://github.com/CrunchwrapSupreme/rubyconfig-vault/actions/workflows/ruby-test.yml/badge.svg?branch=main)](https://github.com/CrunchwrapSupreme/rubyconfig-vault/actions/workflows/ruby-test.yml)
 [![Gem Version](https://badge.fury.io/rb/rubyconfig-vault.svg)](https://badge.fury.io/rb/rubyconfig-vault)
-# Rubyconfig Vault
+# Ruby Config Vault Source
 
-This gem is provided to support vault sources in rubyconfig installations.
+This gem is provided to support vault sources in [rubyconfig/config](https://github.com/rubyconfig/config) installations.
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
 ```ruby
+gem 'config'
 gem 'rubyconfig-vault'
 ```
 
@@ -25,6 +26,7 @@ Or install it yourself as:
 For more vault authentication methods see ruby documentation for https://github.com/hashicorp/vault-ruby and for additional rubyconfig configuration options see https://github.com/rubyconfig/config.
 
 ```ruby
+require 'config'
 require 'config/vault'
 
 auth_secret = Vault.auth.approle('roleid', 'secret id')

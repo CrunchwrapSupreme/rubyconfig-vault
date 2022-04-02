@@ -1,4 +1,5 @@
 require "bundler/setup"
+require "config"
 require "config/vault"
 require_relative "support/vault_server"
 
