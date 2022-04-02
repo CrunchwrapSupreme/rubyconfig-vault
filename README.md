@@ -4,7 +4,7 @@
 
 # Ruby Config Vault Source
 
-This gem is provided to support vault sources in [rubyconfig/config](https://github.com/rubyconfig/config) installations.
+This gem is provided to support vault sources in [rubyconfig/config](https://github.com/rubyconfig/config) installations. Further documentation can be found at [rubydoc.info](https://www.rubydoc.info/gems/rubyconfig-vault/Config).
 
 ## Installation
 

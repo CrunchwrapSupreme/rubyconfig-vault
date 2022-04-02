@@ -2,10 +2,17 @@ require 'vault'
 
 module Config
   module Sources
+    # A vault source for Config
     class VaultSource
       attr_accessor :kv, :root
       attr_reader :paths, :client
 
+      # Create a new Config source
+      #
+      # @param [Hash] opts
+      # @option opts [String, nil] :kv mount point for operations
+      # @option opts [Array<String>, nil] :paths paths for vault secrets
+      # @option opts [String, Symbol, nil] :root root key for data provided by source
       def initialize(opts = {})
         client_opts = opts.clone
         @kv = client_opts.delete(:kv) || ''
@@ -14,18 +21,32 @@ module Config
         @client = Vault::Client.new(client_opts)
       end
 
+      # Add a path to Config source
+      #
+      # @example Use glob operators
+      #   source.add_path('secrets/**/test/*')
+      #   source.load #=> { secrets: { some_key: { test: { secret_data: 2 } } } }
+      #
+      # @param path [String]
       def add_path(path)
         @paths << path
       end
 
+      # Remove added paths
       def clear_paths
         @paths = []
       end
 
+      # Load data from source into hash
+      #
+      # @return [Hash]
       def load
         process_paths
       end
 
+      # Client reference for quick operations
+      #
+      # @return [Vault::KV, Vault:Logical]
       def client
         unless kv.empty?
           @client.kv(@kv)
