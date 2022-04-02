@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'config'
 
 RSpec.describe Config::Sources::VaultSource do
   let(:client) { vault_client.kv('verionsed-kv') }
@@ -57,5 +58,18 @@ RSpec.describe Config::Sources::VaultSource do
     expect(hsh.dig(:test, :test3, :test, :testkey3)).to eq(3)
     expect(hsh.dig(:test, :test4, :test, :testkey4)).to eq(4)
     expect(hsh.dig(:test, :test5, :test, :test, :testkey5)).to eq(5)
+  end
+
+  it "should allow a root key to be set" do
+    source.root = :vault
+    source.add_path('test')
+    hsh = source.load
+    expect(hsh.dig(:vault, :test, :testkey1)).to eql(1)
+  end
+
+  it "should integrate with Config" do
+    source.add_path('test')
+    settings = Config.load_files(source)
+    expect(settings.test.testkey1).to eq(1)
   end
 end
