@@ -3,13 +3,14 @@ require 'vault'
 module Config
   module Sources
     class VaultSource
-      attr_accessor :kv
+      attr_accessor :kv, :root
       attr_reader :paths, :client
 
       def initialize(opts = {})
         client_opts = opts.clone
         @kv = client_opts.delete(:kv) || ''
         @paths = client_opts.delete(:paths) || []
+        @root = client_opts.delete(:root)
         @client = Vault::Client.new(client_opts)
       end
 
@@ -76,7 +77,11 @@ module Config
           end
         end
 
-        root
+        if @root
+          { @root => root }
+        else
+          root
+        end
       end
 
     end
