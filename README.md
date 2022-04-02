@@ -25,7 +25,7 @@ Or install it yourself as:
 For more vault authentication methods see ruby documentation for https://github.com/hashicorp/vault-ruby and for additional rubyconfig configuration options see https://github.com/rubyconfig/config.
 
 ```ruby
-require 'rubyconfig/vault'
+require 'config/vault'
 
 auth_secret = Vault.auth.approle('roleid', 'secret id')
 source = Config::Sources::VaultSource(address: ENV['VAULT_ADDR'], 
@@ -40,6 +40,8 @@ source.add_path('kvp/**/test')
 
 # Or combine the two...
 source.add_path('kvp/**/some/keys/*')
+
+Config.load_and_set_settings(source)
 
 Settings.add_source!(source)
 Settings.reload!
@@ -59,9 +61,9 @@ puts Settings.kvp.rando4.some.keys.test2.some_value
 
 ## Development
 
-Follow https://www.vaultproject.io/docs/install to install vault as development dependency. Alternatively use the provided Dockerfile.
+After checking out the repo, run `bin/setup` to install dependencies. You can also run `bin/console` for an interactive prompt that will allow you to experiment. 
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+Follow https://www.vaultproject.io/docs/install to install vault as development dependency and then run `rake`. Alternatively leverage the provided Dockerfile using `rake docker:build` and `rake docker:spec` to run tests.
 
 To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 

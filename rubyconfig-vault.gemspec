@@ -1,4 +1,4 @@
-require_relative 'lib/rubyconfig/vault/version'
+require_relative 'lib/config/vault/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "rubyconfig-vault"
@@ -18,7 +18,7 @@ Gem::Specification.new do |spec|
 
   # Specify which files should be added to the gem when it is released.
   # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
-  spec.files         = Dir['lib/**/*.rb']
+  spec.files         = ['lib/config/vault.rb', 'lib/config/vault/vault_source.rb', 'lib/config/vault/version.rb']
   spec.bindir        = "exe"
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
@@ -26,4 +26,5 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "config", "~> 4.0.0"
   spec.add_development_dependency "rake", "~> 12.0"
   spec.add_development_dependency "rspec", "~> 3.0"
+  spec.add_development_dependency "pry"
 end

@@ -1,6 +1,5 @@
 require "bundler/setup"
-require "vault"
-require "rubyconfig/vault"
+require "config/vault"
 require_relative "support/vault_server"
 
 RSpec.configure do |config|
