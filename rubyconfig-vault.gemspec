@@ -2,7 +2,7 @@ require_relative 'lib/config/vault/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "rubyconfig-vault"
-  spec.version       = Rubyconfig::Vault::VERSION
+  spec.version       = Config::Vault::VERSION
   spec.authors       = ["David Young"]
   spec.email         = ["da.young@f5.com"]
 
@@ -11,13 +11,10 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = Gem::Requirement.new(">= 2.6.0")
 
   spec.metadata["allowed_push_host"] = 'https://rubygems.org'
-
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = 'https://github.com/CrunchwrapSupreme/rubyconfig-vault'
-  # spec.metadata["changelog_uri"] = "TODO: Put your gem's CHANGELOG.md URL here."
+  spec.metadata["documentation_uri"] = 'https://www.rubydoc.info/gems/rubyconfig-vault/index'
 
-  # Specify which files should be added to the gem when it is released.
-  # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
   spec.files         = ['lib/config/vault.rb', 'lib/config/vault/vault_source.rb', 'lib/config/vault/version.rb']
   spec.bindir        = "exe"
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
