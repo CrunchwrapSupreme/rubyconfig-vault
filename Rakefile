@@ -11,7 +11,12 @@ namespace :docker do
 
   desc 'Run specs in docker container'
   task :spec do
-    system('docker run --rm -t rconfvault:latest')
+    system('docker run --rm -t rconfvault:latest bundle exec rake')
+  end
+
+  desc 'Run bin/console inside docker container'
+  task :console do
+    system('docker run --rm -it rconfvault:latest bundle exec bin/console')
   end
 end
 
