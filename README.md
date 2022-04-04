@@ -71,6 +71,9 @@ Valid options for `Config::Sources::VaultSource.new` include all the configurati
 - `:root` set a root key under which all keys from this source will be located
 - `:kv` set the mount point
 - `:paths` a list of valid paths for keys
+- `:attempts` number of attempts to recover from Vault::HTTPError
+- `:base` initial backoff for attempts
+- `:max_wait` maximum backoff for attempts
 
 ## Development
 

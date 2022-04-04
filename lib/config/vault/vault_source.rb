@@ -7,7 +7,7 @@ module Config
       attr_accessor :kv, :root
       attr_reader :paths, :client
 
-      # Create a new Config source
+      # Create a new Config source, all Vault::Client parameters supported
       #
       # @param [Hash] opts
       # @option opts [String, nil] :kv mount point for operations
