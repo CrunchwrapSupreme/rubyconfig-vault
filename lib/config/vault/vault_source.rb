@@ -12,18 +12,28 @@ module Config
       # @param [Hash] opts
       # @option opts [String, nil] :kv mount point for operations
       # @option opts [Array<String>, nil] :paths paths for vault secrets
-      # @option opts [String, Symbol, nil] :root root key for data provided by source
+      # @option opts [String, Symbol, nil] :root default root key for data provided by source
       # @option opts [Integer] :attempts number of attempts to try and resolve Vault::HTTPError
       # @option opts [Number] :base interval for exponential backoff
       # @option opts [Number] :max_wait maximum weight time for exponential backoff
+      # @option opts [Boolean] :flatten flatten the resulting hash. Preserves root option
       def initialize(opts = {})
         client_opts = opts.clone
         @kv = client_opts.delete(:kv) || ''
-        @paths = client_opts.delete(:paths) || []
+        @paths = []
         @attempts = client_opts.delete(:attempts) || 5
         @base = client_opts.delete(:base) || 0.5
         @max_wait = client_opts.delete(:max_wait) || 2.5
         @root = client_opts.delete(:root)
+        @flatten = client_opts.delete(:flatten)
+        @paths << client_opts.delete(:paths) if client_opts.key?(:paths)
+        @paths.map! do |p|
+          if p.is_a?(Array)
+            p
+          else
+            [p, @root]
+          end
+        end
         @client = Vault::Client.new(client_opts)
       end
 
@@ -34,8 +44,9 @@ module Config
       #   source.load #=> { secrets: { some_key: { test: { secret_data: 2 } } } }
       #
       # @param path [String]
-      def add_path(path)
-        @paths << path
+      def add_path(path, root = nil)
+        root ||= @root
+        @paths << [path, root]
       end
 
       # Remove added paths
@@ -75,7 +86,7 @@ module Config
 
       def process_path(path)
         root = {}
-        subpaths = path.split('/')
+        subpaths = path.first.split('/')
         stack = []
         stack.push([nil, 0, root])
 
@@ -106,7 +117,8 @@ module Config
           end
         end
 
-        if @root
+        root = root.flatten if @flatten
+        if path.last
           { @root => root }
         else
           root
