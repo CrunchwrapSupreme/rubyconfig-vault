@@ -104,8 +104,8 @@ module Config
           sp = subpaths[idx]
           if sp.nil? || sp.eql?('*')
             data = client_ops.read(query_path)&.data || {}
-            data.transform_keys! { |key| @map[key] || key }
             parent.merge!(data)
+            parent.transform_keys! { |key| @map[key] || key }
             parent.compact!
           end
 
