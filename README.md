@@ -34,7 +34,8 @@ require 'config/vault'
 auth_secret = Vault.auth.approle('roleid', 'secret id')
 source = Config::Sources::VaultSource.new(address: ENV['VAULT_ADDR'], 
                                           token: auth_secret.auth.client_token,
-                                          paths: ['kvp/secret'])
+                                          paths: ['kvp/secret'],
+                                          flatten: false)
                                       
 # The * operator retrieves values at kvp/ and the values of immediate child keys
 source.add_path('kvp/*')
@@ -44,6 +45,9 @@ source.add_path('kvp/**/test')
 
 # Or combine the two...
 source.add_path('kvp/**/some/keys/*')
+
+# Or mount path to custom root...
+source.add_path('kvp/custom', 'vault')
 
 Config.load_and_set_settings(source)
 
@@ -61,6 +65,9 @@ puts Settings.kvp.rando.some_value
 # 'kvp/**/test'
 puts Settings.kvp.rando.test.some_value
 puts Settings.kvp.rando2.test.some_value
+
+# 'kvp/custom'
+puts Settings.vault.custom
 
 # 'kvp/**/some/keys/*'
 puts Settings.kvp.rando3.some.keys.some_value
