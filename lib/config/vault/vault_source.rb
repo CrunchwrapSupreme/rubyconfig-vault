@@ -27,6 +27,7 @@ module Config
         @root = client_opts.delete(:root)
         @flatten = client_opts.delete(:flatten)
         @paths << client_opts.delete(:paths) if client_opts.key?(:paths)
+        @map = {}
         @paths.map! do |p|
           if p.is_a?(Array)
             p
@@ -48,6 +49,13 @@ module Config
       def add_path(path, root = nil)
         root ||= @root
         @paths << [path, root]
+      end
+
+      # Re-map individual key names
+      #
+      # @param hsh [Hash] mappings for keys
+      def map(hsh)
+        @map = hsh
       end
 
       # Remove added paths
@@ -95,8 +103,9 @@ module Config
           query_path, idx, parent = stack.pop
           sp = subpaths[idx]
           if sp.nil? || sp.eql?('*')
-            data = client_ops.read(query_path)&.data
-            parent.merge!(data || {})
+            data = client_ops.read(query_path)&.data || {}
+            parent.merge!(data)
+            parent.transform_keys! { |key| @map[key] || key }
             parent.compact!
           end
 
