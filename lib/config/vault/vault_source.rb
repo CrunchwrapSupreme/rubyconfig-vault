@@ -16,6 +16,7 @@ module Config
       # @option opts [Integer] :attempts number of attempts to try and resolve Vault::HTTPError
       # @option opts [Number] :base interval for exponential backoff
       # @option opts [Number] :max_wait maximum weight time for exponential backoff
+      # @option opts [Boolean] :flatten flatten the resulting hash. Preserves root option
       def initialize(opts = {})
         client_opts = opts.clone
         @kv = client_opts.delete(:kv) || ''
@@ -24,6 +25,7 @@ module Config
         @base = client_opts.delete(:base) || 0.5
         @max_wait = client_opts.delete(:max_wait) || 2.5
         @root = client_opts.delete(:root)
+        @flatten = client_opts.delete(:flatten)
         @client = Vault::Client.new(client_opts)
       end
 
@@ -106,6 +108,7 @@ module Config
           end
         end
 
+        root = root.flatten if @flatten
         if @root
           { @root => root }
         else
