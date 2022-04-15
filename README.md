@@ -81,6 +81,7 @@ Valid options for `Config::Sources::VaultSource.new` include all the configurati
 - `:attempts` number of attempts to recover from Vault::HTTPError
 - `:base` initial backoff for attempts
 - `:max_wait` maximum backoff for attempts
+- `:flatten` flatten hash and mount on root(s) if provided
 
 ## Development
 
