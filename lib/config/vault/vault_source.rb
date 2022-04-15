@@ -44,6 +44,7 @@ module Config
       #   source.load #=> { secrets: { some_key: { test: { secret_data: 2 } } } }
       #
       # @param path [String]
+      # @param root [String] optional root
       def add_path(path, root = nil)
         root ||= @root
         @paths << [path, root]
