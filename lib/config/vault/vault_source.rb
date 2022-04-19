@@ -1,5 +1,6 @@
 require 'config'
 require 'vault'
+require_relative 'vault_error'
 
 module Config
   module Sources
@@ -68,7 +69,7 @@ module Config
       #
       # @return [Hash]
       def load
-        ::Vault.with_retries(::Vault::HTTPError,
+        ::Vault.with_retries(RecoverableVaultError,
                              attempts: @attempts,
                              base: @base,
                              max_wait: @max_wait) do
@@ -84,6 +85,30 @@ module Config
         else
           @client.logical
         end
+      end
+
+      def read_at_path(query_path)
+        client_ops.read(query_path)&.data || {}
+      rescue ::Vault::HTTPClientError => e
+        if e.code == 403
+          raise VaultError, "Attempting to read at path #{query_path}\n#{e.response}", caller
+        else
+          raise RecoverableVaultError, e.response, caller
+        end
+      rescue ::Vault::HTTPError => e
+        raise RecoverableVaultError, e.response, caller
+      end
+
+      def list_at_path(query_path)
+        client_ops.list(query_path)
+      rescue ::Vault::HTTPClientError => e
+        if e.code == 403
+          raise VaultError, "Attempting to list at path #{query_path}\n#{e.response}", caller
+        else
+          raise RecoverableVaultError, e.response, caller
+        end
+      rescue ::Vault::HTTPError => e
+        raise RecoverableVaultError, e.response, caller
       end
 
       def process_paths
@@ -104,7 +129,7 @@ module Config
           query_path, idx, parent = stack.pop
           sp = subpaths[idx]
           if sp.nil? || sp.eql?('*')
-            data = client_ops.read(query_path)&.data || {}
+            data = read_at_path(query_path)
             node = root if @flatten
             node = parent unless @flatten
             node.merge!(data)
@@ -113,7 +138,7 @@ module Config
           end
 
           if sp.eql?('**') || sp.eql?('*')
-            subtrees = client_ops.list(query_path)
+            subtrees = list_at_path(query_path)
             subtrees.each do |st|
               new_parent = {}
               new_key = st.split('/').last.downcase.to_sym
