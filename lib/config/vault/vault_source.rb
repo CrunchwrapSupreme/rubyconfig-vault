@@ -1,3 +1,4 @@
+require 'config'
 require 'vault'
 
 module Config
@@ -67,10 +68,10 @@ module Config
       #
       # @return [Hash]
       def load
-        Vault.with_retries(Vault::HTTPError,
-                           attempts: @attempts,
-                           base: @base,
-                           max_wait: @max_wait) do
+        ::Vault.with_retries(::Vault::HTTPError,
+                             attempts: @attempts,
+                             base: @base,
+                             max_wait: @max_wait) do
           process_paths
         end
       end
