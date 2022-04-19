@@ -4,7 +4,7 @@ module Config
   module Sources
     # A vault source for Config
     class VaultSource
-      attr_accessor :kv, :root
+      attr_accessor :kv, :root, :flatten
       attr_reader :paths, :client
 
       # Create a new Config source, all Vault::Client parameters supported
@@ -35,7 +35,7 @@ module Config
             [p, @root]
           end
         end
-        @client = Vault::Client.new(client_opts)
+        @client = ::Vault::Client.new(client_opts)
       end
 
       # Add a path to Config source
@@ -104,9 +104,11 @@ module Config
           sp = subpaths[idx]
           if sp.nil? || sp.eql?('*')
             data = client_ops.read(query_path)&.data || {}
-            parent.merge!(data)
-            parent.transform_keys! { |key| @map[key] || key }
-            parent.compact!
+            node = root if @flatten
+            node = parent unless @flatten
+            node.merge!(data)
+            node.transform_keys! { |key| @map[key] || key }
+            node.compact!
           end
 
           if sp.eql?('**') || sp.eql?('*')
@@ -115,19 +117,18 @@ module Config
               new_parent = {}
               new_key = st.split('/').last.downcase.to_sym
               new_query_path = [query_path, st].join('/')
-              parent[new_key] = new_parent
+              parent[new_key] = new_parent unless @flatten
               stack.push([new_query_path, idx + 1, new_parent])
             end
           elsif sp
             query_path = [query_path, sp].compact.join('/')
             idx += 1
             new_parent = {}
-            parent[sp.downcase.to_sym] = new_parent
+            parent[sp.downcase.to_sym] = new_parent unless @flatten
             stack.push([query_path, idx, new_parent])
           end
         end
 
-        root = root.flatten if @flatten
         if path.last
           { @root => root }
         else

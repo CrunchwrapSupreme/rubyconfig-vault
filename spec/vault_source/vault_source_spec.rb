@@ -60,6 +60,15 @@ RSpec.describe Config::Sources::VaultSource do
     expect(hsh.dig(:test, :test5, :test, :test, :testkey5)).to eq(5)
   end
 
+  it "should :flatten when told" do
+    source.flatten = true
+    source.add_path('test/**/test')
+    hsh = source.load
+    expect(hsh.dig(:testkey3)).to eq(3)
+    expect(hsh.dig(:testkey4)).to eq(4)
+    expect(hsh.dig(:test)).to eq(nil)
+  end
+
   it "should allow a root key to be set" do
     source.root = :vault
     source.add_path('test')
