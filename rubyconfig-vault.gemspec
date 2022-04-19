@@ -15,7 +15,7 @@ Gem::Specification.new do |spec|
   spec.metadata["source_code_uri"] = 'https://github.com/CrunchwrapSupreme/rubyconfig-vault'
   spec.metadata["documentation_uri"] = 'https://www.rubydoc.info/gems/rubyconfig-vault/index'
 
-  spec.files         = ['lib/config/vault.rb', 'lib/config/vault/vault_source.rb', 'lib/config/vault/version.rb']
+  spec.files         = ['lib/config/vault.rb', 'lib/config/vault/vault_source.rb', 'lib/config/vault/version.rb', 'lib/config/vault/vault_error.rb']
   spec.bindir        = "exe"
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
