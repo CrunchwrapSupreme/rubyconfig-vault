@@ -131,6 +131,8 @@ module Config
         end
 
         if path.last
+          { path.last => root }
+        elsif @root
           { @root => root }
         else
           root
