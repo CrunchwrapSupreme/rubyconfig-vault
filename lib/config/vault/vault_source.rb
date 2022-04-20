@@ -29,7 +29,7 @@ module Config
         @root = client_opts.delete(:root)
         @flatten = client_opts.delete(:flatten)
         @paths << client_opts.delete(:paths) if client_opts.key?(:paths)
-        @map = {}
+        map({})
         @paths.map! do |p|
           if p.is_a?(Array)
             p
@@ -58,6 +58,7 @@ module Config
       # @param hsh [Hash] mappings for keys
       def map(hsh)
         @map = hsh
+        @map.transform_keys! { |k| k.to_sym }
       end
 
       # Remove added paths
@@ -90,7 +91,7 @@ module Config
       def read_at_path(query_path)
         client_ops.read(query_path)&.data || {}
       rescue ::Vault::HTTPClientError => e
-        if e.code == 403
+        if e.code.to_i == 403
           raise VaultError, "Attempting to read at path #{query_path}\n#{e.response}", caller
         else
           raise RecoverableVaultError, e.response, caller
@@ -114,7 +115,7 @@ module Config
       def process_paths
         root = {}
         parsed_paths = @paths.map { |p| process_path(p) }
-        parsed_paths.each { |p| root.merge!(p) }
+        parsed_paths.each { |p| root.deep_merge!(p) }
 
         root
       end
